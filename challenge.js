@@ -1,42 +1,62 @@
-let counter = document.getElementById("counter")
-let decrement = document.getElementById("-")
-let increment = document.getElementById("+")
-let like = document.getElementById("<3")
-let pause = document.getElementById("pause")
+let counter = document.getElementById("counter");
+	let num = parseInt(counter.innerText);
+	let minus = document.getElementById("-");
+	let plus = document.getElementById("+");
+	let heart = document.getElementById("<3");
+	let pause = document.getElementById("pause");
+	let comment = document.getElementById('comment-form');
 
-var playing = !0
+	let is_paused = false;
 
-timer = function() {
-  return setInterval(function() {
-    counter.innerText = parseInt(counter.innerText) + 1
-  }, 1000)
-}
-interval = timer()
+	let timer = setInterval(() => {
+	  if (!is_paused) {
+	    counter.innerText = ++num;
+	  }
+	}, 1000)
 
+	minus.addEventListener('click', () => {
+	  counter.innerText = --num;
+	})
 
-decrement.addEventListener('click', function() {
-  counter.innerText = parseInt(counter.innerText) - 1;
-})
+	plus.addEventListener('click', () => {
+	  counter.innerText = ++num;
+	})
 
-increment.addEventListener('click', function() {
-  counter.innerText = parseInt(counter.innerText) + 1;
-})
+	let current;
+	let count;
+	heart.addEventListener('click', () => {
+	  let like = document.querySelector(".likes")
+	  like.dataset.num = num;
 
-like.addEventListener('click', function() {
+	  if(current === num){
+	      let lastChild = like.children[like.children.length -1];
+	      count++;
+	      lastChild.innerText = `${num} has been liked ${count} times`;
+	    }
+	    else {
+	      let li = document.createElement('li');
+	      count = 1;
+	      li.innerText = `${num} has been liked ${count} time`;
+	      like.appendChild(li);
+	      current = num;
+	    }
+	})
 
-})
+	pause.addEventListener('click', () => {
+	  is_paused = !is_paused;
+	  pause.innerText = is_paused ? "resume" : "pause";
+	  minus.disabled = is_paused;
+	  plus.disabled = is_paused;
+	  heart.disabled = is_paused;
+	})
 
-// pause.addEventListener('click', function(){
-//   counter.innerText = parseInt(counter.innerText)
-// })
+	comment.addEventListener("submit", (e) => {
+	  e.preventDefault();
+	  let input = document.querySelector('input');
+	  let div = document.querySelector('#list');
+	  let p = document.createElement('p');
+	  p.innerText = input.value;
+	  input.value = "";
+	  div.appendChild(p);
 
-
-
-
-
-pause.addEventListener("click", function() {
-
-  playing ? (playing = !1, clearInterval(interval), this.innerText = "resume") : (playing = !0, interval = timer(), this.innerText = "pause"), [].concat(_toConsumableArray(document.getElementsByTagName("button"))).forEach(function(a) {
-    "pause" !== document.getElementById("counter").id && (document.getElementById("counter").disabled = !playing)
-  })
-})
+	})
